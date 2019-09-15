@@ -24,15 +24,15 @@ SECRET_KEY = ')ifbo#%2qmqu8g0aqz&_l7_xt8zgeshoxma3s_4+a8n3y2_5uj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin', 'django.contrib.auth',
     'django.contrib.contenttypes', 'django.contrib.sessions',
-    'django.contrib.messages', 'django.contrib.staticfiles',
-    'api.apps.ApiConfig', 'background_task'
+    'django.contrib.messages', 'django.contrib.staticfiles', 'api',
+    'background_task', 'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -113,4 +113,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+CORS_ORIGIN_WHITELIST = "http://localhost:3000",

@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
+from api.firebase.init_firebase import initFireBase
+
 
 class ApiConfig(AppConfig):
     name = 'api'
@@ -10,4 +12,4 @@ class ApiConfig(AppConfig):
     def ready(self):
         super().ready()
         print("django api config ready")
-        return "Hello Django"
+        initFireBase()
