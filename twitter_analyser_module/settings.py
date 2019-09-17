@@ -31,8 +31,8 @@ ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS = [
     'django.contrib.admin', 'django.contrib.auth',
     'django.contrib.contenttypes', 'django.contrib.sessions',
-    'django.contrib.messages', 'django.contrib.staticfiles', 'api',
-    'background_task', 'corsheaders'
+    'django.contrib.messages', 'django.contrib.staticfiles', 'background_task',
+    'corsheaders', 'api.apps.ApiConfig'
 ]
 
 MIDDLEWARE = [

@@ -18,14 +18,13 @@ def responseData(data):
     return res
 
 
-@background(schedule=1)
+@background(schedule=5)
 def handleWriteFileInTwitter(hashTagSearch):
     auth = auth_session()
     api = TwitterAPI(auth)
     data = api.get_search_cursor(hashTagSearch)
     write_filesName('{}.csv'.format(hashTagSearch))
-    print("done")
-    return True
+    print("done", hashTagSearch)
 
 
 # search data from hashtag is post method
@@ -51,5 +50,4 @@ def handleDataCsv(req, *args, **kwargs):
         zip_datas['features'] = methodd['tempp']['features']
         zip_datas['idf'] = methodd['tempp']['idf']
         zip_datas["userTopRetweet"] = findUserIsRetweeted(methodd['tweet'])
-        # tempOfUserRetweeted =
     return responseData(json.dumps(zip_datas))

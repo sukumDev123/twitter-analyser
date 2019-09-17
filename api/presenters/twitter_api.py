@@ -25,5 +25,5 @@ class TwitterAPI:
                 print('--> ', index_)
                 temp.append(gg._json)
                 index_ += 1
-        hadle_data_to_csv(temp, q)
-        return "save to csv file."
+
+        return hadle_data_to_csv(temp, q)
