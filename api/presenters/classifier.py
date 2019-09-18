@@ -7,6 +7,7 @@ from collections import Counter
 from pythainlp.tokenize import word_tokenize as wt
 import dill
 from api.presenters.handle_data import clean_text
+import os
 
 
 def readFileDill(name_files):
@@ -31,12 +32,19 @@ def pipeTextDocumentToVec():
 
 
 # method export
-def predictWord(datas):
+def predictWord(datas, name_files):
     if len(datas) > 0:
-        readClassifyModel = readFileDill('models/classify')
-        pipeTextToVec = pipeTextDocumentToVec()
-        pipeTextHandle = pipeTextToVec.transform(
-            [clean_text(data) for data in datas])
-        predictResult = readClassifyModel.predict(pipeTextHandle)
-        return list(predictResult)
+        checkIfPredicted = name_files in os.listdir('predict_results/')
+        if checkIfPredicted != True:
+            readClassifyModel = readFileDill('models/classify')
+            pipeTextToVec = pipeTextDocumentToVec()
+            pipeTextHandle = pipeTextToVec.transform(datas)
+            predictResult = readClassifyModel.predict(pipeTextHandle)
+            save_file_to_predicted = pd.DataFrame(predictResult)
+            save_file_to_predicted.to_csv(
+                'predict_results/{}'.format(name_files))
+            return list(predictResult)
+        else:
+            csvFile = pd.read_csv('predict_results/{}'.format(name_files))
+            return list(csvFile['0'])
     return []

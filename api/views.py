@@ -44,11 +44,18 @@ def getHashTagFile():
 
 
 def handle_textType(predResult, tweet):
-    data_1 = [tweet[ind] for ind, data in enumerate(predResult) if data == "1"]
-    data_1Neg = [
-        tweet[ind] for ind, data in enumerate(predResult) if data == "-1"
+    data_1 = [
+        tweet[ind] for ind, data in enumerate(predResult)
+        if '{}'.format(data) == "1"
     ]
-    data_0 = [tweet[ind] for ind, data in enumerate(predResult) if data == "0"]
+    data_1Neg = [
+        tweet[ind] for ind, data in enumerate(predResult)
+        if '{}'.format(data) == "-1"
+    ]
+    data_0 = [
+        tweet[ind] for ind, data in enumerate(predResult)
+        if '{}'.format(data) == "0"
+    ]
     return {"good": data_1[:10], "neg": data_1Neg[:10], "neutral": data_0[:10]}
 
 
@@ -73,7 +80,8 @@ def handleDataCsv(req, *args, **kwargs):
         zip_datas['features'] = methodd['tempp']['features']
         zip_datas['idf'] = methodd['tempp']['idf']
         zip_datas["userTopRetweet"] = findUserIsRetweeted(methodd['tweet'])
-        zip_datas['word_predict'] = predictWord(methodd['tweet'])
-        twt = handle_textType(predictWord(methodd['tweet']), methodd['tweet'])
+        pred_fun = predictWord(methodd['tweet'], toJson['name_file'])
+        zip_datas['word_predict'] = pred_fun
+        twt = handle_textType(pred_fun, methodd['tweet'])
         zip_datas['text_sentiments'] = twt
     return responseData(json.dumps(zip_datas))
