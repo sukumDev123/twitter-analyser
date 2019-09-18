@@ -4,7 +4,6 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfTransformer
 from collections import Counter
-
 cutOnlyHashTag = lambda txt: re.findall(r"#[ก-๙a-zA-Z0-9]+", txt)
 
 joinHashtag = lambda hashArray: ' '.join(word.strip() for word in hashArray

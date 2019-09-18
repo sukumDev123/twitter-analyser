@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.admin', 'django.contrib.auth',
     'django.contrib.contenttypes', 'django.contrib.sessions',
     'django.contrib.messages', 'django.contrib.staticfiles', 'background_task',
-    'corsheaders', 'api.apps.ApiConfig'
+    'corsheaders', 'api.apps.ApiConfig', "rest_framework"
 ]
 
 MIDDLEWARE = [

@@ -7,6 +7,9 @@ from api.presenters.twitter_auth import auth_session
 from background_task import background
 from api.firebase.firebase_db import write_filesName
 from api.presenters.preprocess import handleFindIdfTextOfHashtag, findUserIsRetweeted
+from api.presenters.classifier import predictWord
+# from celery
+datas = []
 
 
 def responseData(data):
@@ -18,7 +21,7 @@ def responseData(data):
     return res
 
 
-@background(schedule=5)
+@background(schedule=1)
 def handleWriteFileInTwitter(hashTagSearch):
     auth = auth_session()
     api = TwitterAPI(auth)
@@ -31,23 +34,46 @@ def handleWriteFileInTwitter(hashTagSearch):
 @csrf_exempt
 def searchHashtagAndWriteFileCsv(req, *args, **kwargs):
     loadReqVal = json.loads(req.body)
-    handleWriteFileInTwitter(loadReqVal['body'])
-    return responseData("file is writing...")
+    message = handleWriteFileInTwitter(loadReqVal['body'])
+    print(datas, message)
+    return responseData(message)
 
 
 def getHashTagFile():
     pass
 
 
+def handle_textType(predResult, tweet):
+    data_1 = [tweet[ind] for ind, data in enumerate(predResult) if data == "1"]
+    data_1Neg = [
+        tweet[ind] for ind, data in enumerate(predResult) if data == "-1"
+    ]
+    data_0 = [tweet[ind] for ind, data in enumerate(predResult) if data == "0"]
+    return {"good": data_1[:10], "neg": data_1Neg[:10], "neutral": data_0[:10]}
+
+
 @csrf_exempt
 def handleDataCsv(req, *args, **kwargs):
     datas = req.body
 
-    zip_datas = {"features": [], "idf": [], "userTopRetweet": []}
+    zip_datas = {
+        "features": [],
+        "idf": [],
+        "userTopRetweet": [],
+        "word_predict": [],
+        "text_sentiments": {
+            "good": [],
+            "neg": [],
+            "neutral": []
+        }
+    }
     if (datas):
         toJson = json.loads(datas)
         methodd = handleFindIdfTextOfHashtag(toJson['name_file'])
         zip_datas['features'] = methodd['tempp']['features']
         zip_datas['idf'] = methodd['tempp']['idf']
         zip_datas["userTopRetweet"] = findUserIsRetweeted(methodd['tweet'])
+        zip_datas['word_predict'] = predictWord(methodd['tweet'])
+        twt = handle_textType(predictWord(methodd['tweet']), methodd['tweet'])
+        zip_datas['text_sentiments'] = twt
     return responseData(json.dumps(zip_datas))
