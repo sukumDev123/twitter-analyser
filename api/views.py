@@ -9,6 +9,7 @@ from api.firebase.firebase_db import write_filesName
 from api.presenters.preprocess import handleFindIdfTextOfHashtag, findUserIsRetweeted
 from api.presenters.classifier import predictWord
 # from celery
+from api.presenters.clustering import handle_data_before_custer_and_custer
 datas = []
 
 
@@ -35,8 +36,8 @@ def handleWriteFileInTwitter(hashTagSearch):
 def searchHashtagAndWriteFileCsv(req, *args, **kwargs):
     loadReqVal = json.loads(req.body)
     message = handleWriteFileInTwitter(loadReqVal['body'])
-    print(datas, message)
-    return responseData(message)
+
+    return responseData("Waiting for write file.")
 
 
 def getHashTagFile():
@@ -72,6 +73,10 @@ def handleDataCsv(req, *args, **kwargs):
             "good": [],
             "neg": [],
             "neutral": []
+        },
+        "clustering_grop": {
+            "grop_detail": [],
+            "show_user_grop": []
         }
     }
     if (datas):
@@ -84,4 +89,6 @@ def handleDataCsv(req, *args, **kwargs):
         zip_datas['word_predict'] = pred_fun
         twt = handle_textType(pred_fun, methodd['tweet'])
         zip_datas['text_sentiments'] = twt
+        zip_datas['clustering_grop'] = handle_data_before_custer_and_custer(
+            methodd['alldata'])
     return responseData(json.dumps(zip_datas))

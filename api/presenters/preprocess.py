@@ -13,30 +13,39 @@ handleCut = lambda text: re.split(" ", text)
 
 def handleFindIdfTextOfHashtag(name_file):
     read_csv = pd.read_csv('csv_files/{}'.format(name_file))
-    cut_only_hashtag = [cutOnlyHashTag(txt) for txt in read_csv['text']]
+    cut_only_hashtag = [
+        cutOnlyHashTag(txt) for txt in list(set(read_csv['text']))
+    ]
     cut_only_hashtag_filter_data_isNotE = [
         hashtTag for hashtTag in cut_only_hashtag if len(hashtTag) > 0
     ]
     join_hash = [
         joinHashtag(hashT) for hashT in cut_only_hashtag_filter_data_isNotE
     ]
-
     pipeLine = Pipeline([
         ('vect', CountVectorizer(analyzer=lambda word: handleCut(word))),
         ('tfidf', TfidfTransformer()),
     ])
 
     pipeLine.fit_transform(join_hash)
-    datas = {
-        "features": pipeLine['vect'].get_feature_names(),
-        "idf": pipeLine['tfidf'].idf_
-    }
+    hastTag = []
+    temp2 = []
+    for ind, data in enumerate(pipeLine['vect'].get_feature_names()):
+        if (data is not '' and data is not ' ' and data is not None):
+            hastTag.append(pipeLine['vect'].get_feature_names()[ind])
+            temp2.append(pipeLine['tfidf'].idf_[ind])
+
+    datas = {"features": hastTag, "idf": temp2}
     ff = pd.DataFrame(datas).sort_values(by=["idf"])
     tempp = {
         "features": list(ff.head(10)['features']),
         "idf": list(ff.head(10)["idf"])
     }
-    tempp_zip = {"tweet": read_csv['text'], "tempp": tempp}
+    tempp_zip = {
+        "tweet": read_csv['text'],
+        "tempp": tempp,
+        "alldata": read_csv
+    }
     return tempp_zip
 
 

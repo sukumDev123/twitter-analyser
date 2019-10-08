@@ -3,6 +3,8 @@ import re
 from tweepy import Cursor
 from api.presenters.handle_data import hadle_data_to_csv
 
+MAX_TWEETS = 100
+
 
 class TwitterAPI:
     def __init__(self, api):
@@ -20,7 +22,8 @@ class TwitterAPI:
     def get_search_cursor(self, q):
         temp = []
         index_ = 0
-        for tweets in Cursor(self.api.search, q=q, count=200).pages(70):
+        for tweets in Cursor(self.api.search, q=q,
+                             count=100).pages(MAX_TWEETS):
             for gg in tweets:
                 print('--> ', index_)
                 temp.append(gg._json)

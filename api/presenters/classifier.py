@@ -38,7 +38,8 @@ def predictWord(datas, name_files):
         if checkIfPredicted != True:
             readClassifyModel = readFileDill('models/classify')
             pipeTextToVec = pipeTextDocumentToVec()
-            pipeTextHandle = pipeTextToVec.transform(datas)
+            uni_datas = list(set(datas))
+            pipeTextHandle = pipeTextToVec.transform(uni_datas)
             predictResult = readClassifyModel.predict(pipeTextHandle)
             save_file_to_predicted = pd.DataFrame(predictResult)
             save_file_to_predicted.to_csv(
