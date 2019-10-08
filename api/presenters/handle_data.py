@@ -46,7 +46,7 @@ def merge_text(text_array):
 def handle_wt(txt):
     regx = r'https://t.co/\w+|RT\s@\w*\d*:|\n|\s|#|_|\u200b|[=]+\s[ก-๙]+\s[=]+|\n'  #regrx for handle url to split it.
     txt_ = merge_text(re.split(regx, txt))
-    txt__ = merge_text(re.findall(r'[a-zA-Zก-๙]+', txt_, re.MULTILINE))
+    txt__ = merge_text(re.findall(r'[ก-๙]+', txt_, re.MULTILINE))
     text_raw = wt(txt__, engine='newmm')
     datas = list(filter(lambda x: x not in stop_words, text_raw))
     return datas
